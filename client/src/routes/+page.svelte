@@ -1,13 +1,34 @@
 <script lang="ts">
+	import { API_URL } from '$lib';
 	// lets try to use runes
 	let email = $state('');
 	let password = $state('');
 	let showPassword = $state(false);
 
 	// login function
-	const onLogin = (e: Event) => {
+	const onLogin = async (e: Event) => {
 		e.preventDefault();
 		// form validation
+		if (!email || !password) {
+			console.error('Email and password are required');
+			return;
+		}
+
+		// perform the login operation
+
+		try {
+			const response = await fetch(`${API_URL}/login`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify({ email, password })
+			});
+			const data = await response.json();
+			console.log(data);
+		} catch (error) {
+			console.error(error);
+		}
 	};
 </script>
 
