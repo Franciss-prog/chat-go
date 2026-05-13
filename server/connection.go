@@ -10,7 +10,6 @@ import (
 )
 
 func ConnectDB() (*pgxpool.Pool, error) {
-
 	// validate the load of godotenv
 	if err := godotenv.Load(); err != nil {
 		panic(err)
