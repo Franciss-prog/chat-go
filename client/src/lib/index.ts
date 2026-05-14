@@ -5,3 +5,6 @@ export const API_URL = 'http://localhost:8080';
 
 // interfaces  exports
 export { type AuthInterface } from './actions/types/auth';
+
+// components exports
+export { default as Auth } from './components/auth/Auth.svelte';
