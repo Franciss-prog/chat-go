@@ -43,15 +43,21 @@ func main() {
 
 		// parse the body use (Bind)
 		if err := c.Bind().JSON(user); err != nil {
-			return c.Status(400).SendString("Json data didnt come to the server")
+			return c.Status(400).JSON(fiber.Map{
+				"message": "Server didnt recieve the parsed data",
+			})
 		}
 
 		// form validation
 		if user.Email == "" || user.Password == "" {
-			return c.Status(400).SendString("Bad Request")
+			return c.Status(400).JSON(fiber.Map{
+				"message": "Email and Password is required",
+			})
 		}
 
-		//
+		// find the email to the database and validate the password
+
+		// return the data
 		return c.Status(200).JSON(fiber.Map{
 			"message": "Succcessfully Recieve the expected Data",
 		})

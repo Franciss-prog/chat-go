@@ -4,7 +4,13 @@
 export const API_URL = 'http://localhost:8080';
 
 // interfaces  exports
-export { type AuthInterface } from './actions/types/auth';
+export { type AuthInterface } from '$lib/types/authTypes';
 
 // components exports
 export { default as Auth } from './components/auth/Auth.svelte';
+
+// actions exports
+export { handleLogin, handleRegister } from './actions/authActions';
+
+// utils exports
+export { validateAuth } from './utils/authValidation';
