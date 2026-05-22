@@ -8,6 +8,7 @@ export { type AuthInterface } from '$lib/types/authTypes';
 
 // components exports
 export { default as Auth } from './components/auth/Auth.svelte';
+export { default as AuthForm } from './components/auth/AuthForm.svelte';
 
 // actions exports
 export { handleLogin, handleRegister } from './actions/authActions';
