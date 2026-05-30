@@ -1,12 +1,11 @@
-package main
+package database
 
 // imports
 import (
 	"context"
-	"os"
-
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/joho/godotenv"
+	"os"
 )
 
 func ConnectDB() (*pgxpool.Pool, error) {

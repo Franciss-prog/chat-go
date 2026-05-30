@@ -6,6 +6,7 @@
 	let email = $state('');
 	let password = $state('');
 	let confirmPassword = $state('');
+	let loading = $state(false);
 
 	const pathname = $derived(page.url.pathname);
 	const isRegisterPath = $derived(pathname === '/register');
@@ -20,5 +21,5 @@
 			</a>
 		</span>
 	</nav>
-	<AuthForm {username} {email} {password} {confirmPassword} {pathname} {isRegisterPath} />
+	<AuthForm {username} {email} {password} {confirmPassword} {pathname} {isRegisterPath} {loading} />
 </section>

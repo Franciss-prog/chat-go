@@ -1,6 +1,7 @@
 package main
 
 import (
+	"api/ws/database"
 	"context"
 	"fmt"
 	"github.com/gofiber/fiber/v3"
@@ -14,14 +15,14 @@ func main() {
 	app.Use(cors.New())
 
 	// conect to the database
-	db, err := ConnectDB()
+	db, err := database.ConnectDB()
 	if err != nil {
 		panic(err)
 	}
 
 	defer db.Close()
 
-	// test routes
+	// test route for database connection
 	app.Get("/", func(c fiber.Ctx) error {
 		// test the connection
 		var version string
@@ -33,7 +34,7 @@ func main() {
 			})
 		}
 		return c.Status(200).JSON(fiber.Map{
-			"version": version,
+			"message": "The database is running on version",
 		})
 	})
 
@@ -55,11 +56,21 @@ func main() {
 			})
 		}
 
-		// find the email to the database and validate the password
+		// check if the users password is correct based on the email
+		// store the name of user selected
+		var name string
+		err := db.QueryRow(context.Background(), "SELECT username FROM users WHERE email = $1 AND password_hash = crypt($2, password_hash)", user.Email, user.Password).Scan(&name)
+
+		// check the error
+		if err != nil {
+			return c.Status(500).JSON(fiber.Map{
+				"message": "Invalid Email or Password",
+			})
+		}
 
 		// return the data
 		return c.Status(200).JSON(fiber.Map{
-			"message": "Succcessfully Recieve the expected Data",
+			"message": "Welcome to Chat App," + " " + name,
 		})
 	})
 
@@ -78,7 +89,7 @@ func main() {
 		}
 
 		// insert to the database with hashed password
-		_, err := db.Exec(context.Background(), "INSERT INTO users(username, email, password_hash) VALUES($1, crypt($2, gen_salt('bf')), $3)", user.Username, user.Email, user.Password)
+		_, err := db.Exec(context.Background(), "INSERT INTO users(username, email, password_hash) VALUES($1, $2, crypt($3, gen_salt('bf')))", user.Username, user.Email, user.Password)
 
 		// check the error
 		if err != nil {
@@ -88,7 +99,7 @@ func main() {
 		}
 
 		return c.Status(200).JSON(fiber.Map{
-			"message": "Successfully Registered",
+			"message": "Successfully Registered!" + " " + user.Username,
 		})
 	})
 	log.Fatal(app.Listen(":8080"))

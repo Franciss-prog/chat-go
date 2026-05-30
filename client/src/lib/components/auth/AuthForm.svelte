@@ -9,7 +9,8 @@
 		password = $bindable(''),
 		confirmPassword = $bindable(''),
 		pathname,
-		isRegisterPath
+		isRegisterPath,
+		loading = $bindable(false)
 	} = $props();
 
 	// input data to avoid redundancy
@@ -53,6 +54,8 @@
 
 	// login
 	const onLogin = async (e: Event) => {
+		loading = true;
+
 		e.preventDefault();
 
 		validateAuth({ email, password }, pathname);
@@ -60,15 +63,19 @@
 		const success = await handleLogin({ email, password });
 
 		if (!success) {
-			email = '';
-			password = '';
+			setTimeout(() => {
+				email = '';
+				password = '';
+				loading = false;
+			}, 1201);
 			return;
 		}
 
 		email = '';
 		password = '';
+		loading = false;
 
-		setTimeout(() => goto('/chat'), 1500);
+		setTimeout(() => goto('/chat'), 1201);
 	};
 
 	// register
@@ -81,6 +88,17 @@
 			confirmPassword = '';
 			return;
 		}
+
+		const success = await handleRegister({ username, email, password });
+
+		if (!success) {
+			username = '';
+			email = '';
+			password = '';
+			confirmPassword = '';
+			return;
+		}
+		setTimeout(() => goto('/chat'), 1500);
 	};
 </script>
 
@@ -97,7 +115,19 @@
 		{/each}
 	</div>
 	<button
-		class="h-20 w-full border border-light bg-transparent text-3xl transition-colors hover:bg-light hover:text-dark"
-		>{isRegisterPath ? 'Register' : 'Login'}</button
+		class="h-20 w-full border border-light bg-transparent text-3xl transition-colors hover:bg-light hover:text-dark {loading
+			? 'cursor-not-allowed'
+			: 'cursor-pointer'}"
+		disabled={loading}
 	>
+		{#if loading}
+			<div class="flex flex-row items-center justify-center gap-2">
+				<div class="h-4 w-4 animate-bounce rounded-full bg-light"></div>
+				<div class="h-4 w-4 animate-bounce rounded-full bg-light [animation-delay:-.3s]"></div>
+				<div class="h-4 w-4 animate-bounce rounded-full bg-light [animation-delay:-.5s]"></div>
+			</div>
+		{:else}
+			{isRegisterPath ? 'Register' : 'Login'}
+		{/if}
+	</button>
 </form>
