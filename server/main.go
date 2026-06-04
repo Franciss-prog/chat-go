@@ -12,7 +12,9 @@ import (
 func main() {
 	app := fiber.New()
 	// use cors
-	app.Use(cors.New())
+	app.Use(cors.New(cors.Config{
+		AllowCredentials: true,
+	}))
 
 	// conect to the database
 	db, err := database.ConnectDB()

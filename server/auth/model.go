@@ -10,3 +10,12 @@ type RegisterRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type User struct {
+	ID       string
+	Username string
+}
+
+type TokenCookie struct {
+	Token string `cookie:"token"`
+}
