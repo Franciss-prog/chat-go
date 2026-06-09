@@ -4,7 +4,7 @@
 export const API_URL = 'http://localhost:8080';
 
 // interfaces  exports
-export { type AuthInterface } from '$lib/types/authTypes';
+export type { LoginInterface, RegisterInterface } from '$lib/types/authTypes';
 
 // components exports
 export { default as Auth } from './components/auth/Auth.svelte';
@@ -15,3 +15,6 @@ export { handleLogin, handleRegister } from './actions/authActions';
 
 // utils exports
 export { validateAuth } from './utils/authValidation';
+
+// stores exports
+export { userStore } from './stores';

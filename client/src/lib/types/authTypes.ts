@@ -1,6 +1,9 @@
-export interface AuthInterface {
-	username?: string;
+export interface LoginInterface {
 	email: string;
 	password: string;
-	confirmPassword?: string;
+}
+
+export interface RegisterInterface extends LoginInterface {
+	username: string;
+	confirmPassword: string;
 }

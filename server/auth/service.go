@@ -1,6 +1,7 @@
 package auth
 
 import (
+	"api/ws/middleware"
 	"context"
 	"errors"
 )
@@ -17,5 +18,16 @@ func (s *Service) Login(ctx context.Context, email, password string) (string, *U
 	}
 
 	// generate the token
+	token, err := middleware.GenerateToken(user.ID)
 
+	if err != nil {
+		return "", nil, err
+	}
+
+	return token, user, nil
+
+}
+
+func (s *Service) Register(ctx context.Context, request RegisterRequest) (string, error) {
+	return s.repo.RegisterUser(ctx, request.Username, request.Email, request.Password)
 }

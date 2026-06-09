@@ -106,6 +106,7 @@
 	<div class="flex flex-col gap-4">
 		{#each inputs as input}
 			<input
+				required
 				type={input.type}
 				placeholder={input.placeholder}
 				value={input.value()}

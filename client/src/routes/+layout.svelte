@@ -7,4 +7,6 @@
 
 <Toaster richColors position="bottom-right" duration={1500} />
 <svelte:head><link rel="icon" href={favicon} /></svelte:head>
-{@render children()}
+<main class="flex h-screen flex-col bg-dark text-light">
+	{@render children()}
+</main>

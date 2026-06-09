@@ -2,7 +2,7 @@ package auth
 
 import (
 	"api/ws/middleware"
-	"context"
+	"log"
 
 	"github.com/gofiber/fiber/v3"
 	"github.com/jackc/pgx/v5/pgxpool"
@@ -78,7 +78,7 @@ func (h *Handler) Login(c fiber.Ctx) error {
 	// send cookies to client
 	c.Cookie(
 		&fiber.Cookie{
-			Name:     "token",
+			Name:     "access_token",
 			Value:    jwt,
 			HTTPOnly: true,
 			Path:     "/",
@@ -89,6 +89,7 @@ func (h *Handler) Login(c fiber.Ctx) error {
 	return c.Status(200).JSON(fiber.Map{
 		"message": "Welecome to Chat App" + " " + user.Username,
 		"name":    user.Username,
+		"id":      user.ID,
 	})
 }
 
@@ -126,6 +127,7 @@ func (h *Handler) Register(c fiber.Ctx) error {
 				"message": "Email already exists",
 			})
 		default:
+			log.Printf("Failed to Register User: %v", err)
 			return c.Status(500).JSON(fiber.Map{
 				"message": "Failed to Register User, Please Try again",
 			})
@@ -145,17 +147,18 @@ func (h *Handler) Register(c fiber.Ctx) error {
 	// send the cookies to client
 	c.Cookie(
 		&fiber.Cookie{
-			Name:     "token",
+			Name:     "access_token",
 			Value:    jwt,
 			HTTPOnly: true,
 			Path:     "/",
 			MaxAge:   60 * 60 * 24,
-			Secure:   false,
+			Secure:   false, // for dev only -> change to true in prod
 		})
 
 	// return the message and the token
 	return c.Status(200).JSON(fiber.Map{
-		"message": "Welecome to Chat App" + " " + request.Username,
-		"name":    request.Username,
+		"message":  "Welcome to Chat App" + " " + request.Username,
+		"id":       id,
+		"username": request.Username,
 	})
 }
