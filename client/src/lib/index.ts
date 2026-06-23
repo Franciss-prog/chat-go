@@ -3,6 +3,9 @@
 // server url (chnage this on prod if i want to make it public)
 export const API_URL = 'http://localhost:8080';
 
+// ws url (chnage this on prod if i want to make it public)
+export const WS_URL = 'ws://localhost:8080/ws';
+
 // interfaces  exports
 export type { LoginInterface, RegisterInterface } from '$lib/types/authTypes';
 
