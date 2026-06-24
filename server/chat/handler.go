@@ -1,41 +1,44 @@
 package chat
 
 import (
+	"log"
+
 	"github.com/gofiber/contrib/v3/websocket"
 	"github.com/jackc/pgx/v5/pgxpool"
 )
 
-// handler for websocket connection
-
 type Handler struct {
-	repo *Repository
+	svc *Service
+	hub *Hub
 }
 
 func NewHandler(db *pgxpool.Pool) *Handler {
-	return &Handler{
-		repo: NewRepository(db),
+	h := &Handler{
+		svc: NewService(NewRepository(db)),
+		hub: NewHub(),
 	}
+	go h.hub.Run()
+	return h
 }
 
-// websocket connection
-func (h *Handler) Connection(c *websocket.Conn) error {
+func (h *Handler) Connection(c *websocket.Conn) {
+	userID, ok := c.Locals("userID").(string)
+	if !ok || userID == "" {
+		log.Println("connection rejected: missing userID")
+		return
+	}
+	username, _ := c.Locals("username").(string)
 
-	for {
-		// read the message to the websocket server
-		messageType, message, err := c.ReadMessage()
-
-		// check if there is an error ocurring in the connection
-		if err != nil {
-			return err
-		}
-
-		// send message
-		err = c.WriteMessage(messageType, message)
-
-		// check if there is an error occurring in the writing the message
-		if err != nil {
-			return err
-		}
+	client := &Client{
+		Hub:      h.hub,
+		Conn:     c,
+		Send:     make(chan []byte, 256),
+		UserID:   userID,
+		Username: username,
 	}
 
+	h.hub.Register <- client
+
+	go client.WritePump()
+	go client.ReadPump()
 }
